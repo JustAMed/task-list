@@ -1,17 +1,29 @@
-from database import add_task, get_task, del_task, init_db, get_all_tasks
+import database
+from parser import parse
+
+actions = {
+    "add": database.add_task,
+    "del": database.del_task,
+    "list": lambda args: render_table(database.get_all_tasks()),
+    "complete": database.complete_task,
+}
 
 def main():
-    init_db()
+    database.init_db()
     while True:
         command = input("> ")
-        words = command.split()
-        if "add" in words:
-            command = command.replace("add ", "", 1)
-            add_task(command)
-        if "list" in words:
-            print(get_all_tasks())
-        if "exit" in words:
-            break
+        action, args = parse(command)
+        if action == "exit":
+            return
+        actions.get(action, lambda x: print("unknown"))(args)
+
+def render_table(tasks):
+    if not tasks:
+        print("Nothing to see here.")
+        return
+    for id, title, completed in tasks:
+        status = "✓" if completed else "✗"
+        print(f"{id}. {title} [{status}]")
 
 if __name__ == "__main__":
     main()
