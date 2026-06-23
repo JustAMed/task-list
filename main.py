@@ -1,27 +1,28 @@
 import database
 from parser import parse
 
-actions = {
+actions = { # defines task: associated function
     "add": database.add_task,
     "del": database.del_task,
-    "list": lambda args: render_table(database.get_all_tasks()),
+    "list": lambda args: render_table(database.get_all_tasks()), # ignores passing of args as function does not take arguments
     "complete": database.complete_task,
+    "toggle": database.toggle_task,
 }
 
 def main():
-    database.init_db()
+    database.init_db() 
     while True:
-        command = input("> ")
+        command = input("> ") 
         action, args = parse(command)
         if action == "exit":
             return
-        actions.get(action, lambda x: print("unknown"))(args)
+        actions.get(action, lambda x: print("unknown"))(args) # Run the associated function in actions dict. If no such action exists, print "unknown"
 
-def render_table(tasks):
-    if not tasks:
+def render_table(tasks): # renders the table for action "list"
+    if not tasks: 
         print("Nothing to see here.")
         return
-    for id, title, completed in tasks:
+    for id, title, completed in tasks: # Prints each task in format: id. title [✓/✗]
         status = "✓" if completed else "✗"
         print(f"{id}. {title} [{status}]")
 
