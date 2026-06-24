@@ -18,7 +18,7 @@ def main():
     while True:
         command = input("> ") 
         parsed = parse(command)
-        if command in ["exit", "quit":
+        if command in ["exit", "quit"]:
             return
         actions.get(parsed["action"], lambda x: print("unknown"))(parsed["args"]) # Run the associated function in actions dict. If no such action exists, print "unknown"
 
