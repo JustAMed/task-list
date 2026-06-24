@@ -9,14 +9,18 @@ actions = { # defines task: associated function
     "toggle": database.toggle_task,
 }
 
+families = {
+    "task": actions
+}
+
 def main():
     database.init_db() 
     while True:
         command = input("> ") 
-        action, args = parse(command)
-        if action == "exit":
+        parsed = parse(command)
+        if command in ["exit", "quit":
             return
-        actions.get(action, lambda x: print("unknown"))(args) # Run the associated function in actions dict. If no such action exists, print "unknown"
+        actions.get(parsed["action"], lambda x: print("unknown"))(parsed["args"]) # Run the associated function in actions dict. If no such action exists, print "unknown"
 
 def render_table(tasks): # renders the table for action "list"
     if not tasks: 
