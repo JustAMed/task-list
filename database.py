@@ -50,12 +50,14 @@ def toggle_task(task_ids): # toggles completion status of task (0 or 1)
         conn.execute("UPDATE tasks SET completed=1-completed WHERE id=?", (task_id,))
     conn.commit()
 
-
-def main(): # deletes the table, ONLY FOR DEBUG.
+def drop(_):
     conn = sqlite3.connect("tasks.db")
     conn.execute("DROP TABLE tasks")
     conn.commit()
     return
+
+def main(): # deletes the table, ONLY FOR DEBUG.
+    drop(0)
 
 if __name__ == "__main__":
     main()
