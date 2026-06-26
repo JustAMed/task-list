@@ -1,5 +1,34 @@
 import database
+import json
 from parser import parse
+
+def export(fname):
+    result = []
+    tasks = database.get_all_tasks()
+    for idd, title, completed in tasks:
+        result.append(
+            {
+                "id": idd,
+                "title": title,
+                "completed": completed
+            }
+        )
+    with open(fname[0], "w") as f:
+        json.dump(result, f, indent=4)
+    return
+
+def import_from_file(fname):
+    try:
+        with open(fname[0], "r") as f:
+            tasks = json.load(f)
+    except:
+        print("No such file")
+        return
+    for task in tasks:
+        database.add_task([task["title"]])
+        if task["completed"] == 1:
+            database.toggle_task([task["id"]])
+    
 
 task_actions = { # defines task: associated function
         "add": database.add_task,
@@ -9,8 +38,14 @@ task_actions = { # defines task: associated function
         "toggle": database.toggle_task,
     }
 
+backup_actions = {
+    "import": import_from_file,
+    "export": export
+}
+
 families = {
-        "task": task_actions
+        "task": task_actions,
+        "backup": backup_actions
     }
 
 def main():
@@ -36,8 +71,6 @@ def render_table(tasks): # renders the table for action "list"
     for id, title, completed in tasks: # Prints each task in format: id. title [✓/✗]
         status = "✓" if completed else "✗"
         print(f"{id}. {title} [{status}]")
-
-
 
 if __name__ == "__main__":
     main()
